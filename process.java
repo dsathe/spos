@@ -258,7 +258,7 @@ public class process {
 					l1.addLast(j[i]);
 				}
 			}	
-			if(k>=timeslice)
+			if(k>=l1.size())
 			{
 				k=0;
 			}
@@ -271,8 +271,8 @@ public class process {
 			}
 			if(jb.bt==0)
 			{
-				System.out.println("Job id completed :-"+jb.id+" Arrival time:-"+jb.at+" Priority:-"+jb.pr+"\n");
-				l1.removeFirst();
+				System.out.println("Job id completed :-"+jb.id+" Arrival time:-"+jb.at+" time:-"+(count+1)+"\n");
+				l1.remove(k);
 				pcnt++;
 				tt=0;
 			}
@@ -292,3 +292,4 @@ public class process {
 	}
 	
 }
+
