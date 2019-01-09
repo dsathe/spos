@@ -1,295 +1,297 @@
-package sch;
+package assembler;
 
 import java.util.*;
+import java.io.*;
 
-class job
+
+class sym
 {
-	int at,bt,id,pr;
+	String name;
+	int add;
+	int len;
 	
-	
-	job()
+public	sym()
 	{
-		at=bt=id=pr=0;
+		add=len=0;
 	}
-	
-	void accept(int i,int b,int a)
+	String getname()
 	{
-		id=i;
-		bt=b;
-		at=a;
+		return name;
 	}
-	
-	void acc(int i,int b,int a,int p)
+	int getadd()
 	{
-		id=i;
-		bt=b;
-		at=a;
-		pr=p;
-	}
-	
-	void display()
-	{
-		System.out.println("Job id:-"+id+" Burst time:-"+bt+" Arrival time:-"+at+"\n");
+		return add;
 	}
 }
 
-
-public class process {
-
-	void fcfs()
+class  lit
+{
+	String name;
+	int add;
+public lit()
 	{
-		Scanner sc=new Scanner(System.in);
-		System.out.println("Using FCFS :-\nEnter no. of operations:-");
-		int jcnt=sc.nextInt();
-		int a,b,idd;
-		job j[]=null;
-		j=new job[jcnt];
-		for(int i=0;i<jcnt;i++)
-		{
-			j[i]=new job();
-			System.out.println("Enter the job id:-");
-			idd=sc.nextInt();
-			System.out.println("Enter the burst time:-");
-			b=sc.nextInt();
-			System.out.println("Enter the arrival time:-");
-			a=sc.nextInt();
-			j[i].accept(idd, b, a);
-		}
-		
-		LinkedList l1=new LinkedList<job>();
-		int count=0,pcnt=0;
-		while(pcnt<jcnt)
-		{
-			for(int i=0;i<jcnt;i++)
-			{
-				if(j[i].at==count)
-				{
-					l1.addLast(j[i]);
-					pcnt++;
-				}
-			}
-			count++;
-		}
-		int i=0;
-		while(i<jcnt)
-		{
-			job jj=(job) l1.get(i);
-			jj.display();
-			i++;
-		}
-		sc.close();
+		add=0;
 	}
-	
-	void sjf()
-	{
-		Scanner sc=new Scanner(System.in);
-		System.out.println("Using SJF :-\nEnter no. of operations:-");
-		int jcnt=sc.nextInt();
-		int a,b,idd;
-		job j[]=null;
-		j=new job[jcnt];
-		for(int i=0;i<jcnt;i++)
-		{
-			j[i]=new job();
-			System.out.println("Enter the job id:-");
-			idd=sc.nextInt();
-			System.out.println("Enter the burst time:-");
-			b=sc.nextInt();
-			System.out.println("Enter the arrival time:-");
-			a=sc.nextInt();
-			j[i].accept(idd, b, a);
-		}
-		
-		LinkedList l1=new LinkedList<job>();
-		int count=0,pcnt=0;
-		job jb=null;
-		job jb1=null;
-		while(pcnt<jcnt)
-		{
-			for(int i=0;i<jcnt;i++)
-			{
-				if(j[i].at==count)
-				{
-					if(l1.size()==0)
-					{
-						l1.addLast(j[i]);
-					}
-					else
-					{
-						for(int k=0;k<l1.size();k++)
-						{
-							jb1=(job) l1.get(k);
-							if(jb1.bt>j[i].bt)
-							{
-								l1.add(k, j[i]);
-								break;
-							}
-							else if(k==l1.size()-1)
-							{
-								l1.addLast(j[i]);
-								break;
-							}
-						}
-
-					}
-				}
-			}	
-			jb=(job) l1.getFirst();
-			jb.bt--;
-			if(jb.bt==0)
-			{
-				System.out.println("Job id completed :-"+jb.id+" Arrival time:-"+jb.at+"\n");
-				l1.removeFirst();
-				pcnt++;
-			}
-			
-			count++;
-		}
-		sc.close();
-	}
-	
-	void psch()
-	{
-		Scanner sc=new Scanner(System.in);
-		System.out.println("Using Priority Scheduling :-\nEnter no. of operations:-");
-		int jcnt=sc.nextInt();
-		int a,b,idd,p;
-		job j[]=null;
-		j=new job[jcnt];
-		for(int i=0;i<jcnt;i++)
-		{
-			j[i]=new job();
-			System.out.println("Enter the job id:-");
-			idd=sc.nextInt();
-			System.out.println("Enter the burst time:-");
-			b=sc.nextInt();
-			System.out.println("Enter the arrival time:-");
-			a=sc.nextInt();
-			System.out.println("Enter the priority:-");
-			p=sc.nextInt();
-			j[i].acc(idd, b, a, p);
-		}
-		
-		LinkedList l1=new LinkedList<job>();
-		int count=0,pcnt=0;
-		job jb=null;
-		job jb1=null;
-		
-		
-		while(pcnt<jcnt)
-		{
-			for(int i=0;i<jcnt;i++)
-			{
-				if(j[i].at==count)
-				{
-					if(l1.size()==0)
-					{
-						l1.addLast(j[i]);
-					}
-					else
-					{
-						for(int k=0;k<l1.size();k++)
-						{
-							jb1=(job) l1.get(k);
-							if(jb1.pr>j[i].pr)
-							{
-								l1.add(k, j[i]);
-								break;
-							}
-							else if(k==l1.size()-1)
-							{
-								l1.addLast(j[i]);
-								break;
-							}
-						}
-
-					}
-				}
-			}	
-			jb=(job) l1.getFirst();
-			jb.bt--;
-			if(jb.bt==0)
-			{
-				System.out.println("Job id completed :-"+jb.id+" Arrival time:-"+jb.at+" Priority:-"+jb.pr+"\n");
-				l1.removeFirst();
-				pcnt++;
-			}
-			
-			count++;
-		}
-		sc.close();
-		
-		
-	}
-	
-	void rrt()
-	{
-		Scanner sc=new Scanner(System.in);
-		System.out.println("Using Round Robin Technique :-\nEnter no. of operations:-");
-		int jcnt=sc.nextInt();
-		System.out.println("Enter the Time Slice:-");
-		int timeslice=sc.nextInt();
-		int a,b,idd;
-		job j[]=null;
-		j=new job[jcnt];
-		for(int i=0;i<jcnt;i++)
-		{
-			j[i]=new job();
-			System.out.println("Enter the job id:-");
-			idd=sc.nextInt();
-			System.out.println("Enter the burst time:-");
-			b=sc.nextInt();
-			System.out.println("Enter the arrival time:-");
-			a=sc.nextInt();
-			j[i].accept(idd, b, a);
-		}
-		
-		LinkedList l1=new LinkedList<job>();
-		int count=0,pcnt=0;int tt=0;
-		job jb=null;
-		job jb1=null;
-		int k=0;
-		while(pcnt<jcnt)
-		{
-			for(int i=0;i<jcnt;i++)
-			{
-				if(j[i].at==count)
-				{
-					l1.addLast(j[i]);
-				}
-			}	
-			if(k>=l1.size())
-			{
-				k=0;
-			}
-			jb=(job) l1.get(k);
-			jb.bt--;
-			tt++;
-			if(tt==timeslice)
-			{
-				k++;
-			}
-			if(jb.bt==0)
-			{
-				System.out.println("Job id completed :-"+jb.id+" Arrival time:-"+jb.at+" time:-"+(count+1)+"\n");
-				l1.remove(k);
-				pcnt++;
-				tt=0;
-			}
-			
-			count++;
-		}
-		sc.close();
-	}
-	
-	public static void main(String args[])
-	{
-		process p=new process();
-		//p.fcfs();
-		//p.sjf();
-		//p.psch();
-		p.rrt();
-	}
-	
 }
 
+class pass1 {
+	HashMap<String,String> is=new HashMap<String,String>();
+	//HashMap<String,String> ad=new HashMap<String,String>();
+	HashMap<String,String> cc=new HashMap<String,String>();
+	
+	ArrayList<sym> symtab=new ArrayList<sym>();
+	ArrayList<lit> littab=new ArrayList<lit>();
+	
+	int[] pooltab=new int[10];
+	
+	int ptptr=0;
+	int loc_cntr=0;
+	int symptr=0;
+	int litptr=0;
+	
+	public pass1()
+	{
+		is.put("STOP","00");
+		is.put("ADD","01");
+		is.put("SUB","02");
+		is.put("MULT","03");
+		is.put("MOVER","04");
+		is.put("MOVEM","05");
+		is.put("COMP","06");
+		is.put("BC","07");
+		is.put("DIV","08");
+		is.put("READ","09");
+		is.put("PRINT", "10");
+		/*
+		ad.put("START","01");
+		ad.put("END","02");
+		ad.put("EQU","03");
+		ad.put("LTORG","04");
+		ad.put("ORIGIN","05");
+		*/
+		cc.put("LT","01");
+		cc.put("LE","02");
+		cc.put("EQ","03");
+		cc.put("GT","04");
+		cc.put("GE","05");
+		cc.put("ANY","06");
+		pooltab[ptptr]=0;
+	}
+	
+	Boolean islabel(String l)
+	{
+		if(l.charAt(0)=='\t')
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	void genint() throws IOException
+	{
+		BufferedReader br=new BufferedReader(new FileReader ("/home/TE/3167/spos/workspace/demo.asm"));
+		String line=br.readLine();
+		FileWriter fw=new FileWriter("intermediate.asm",true);
+		BufferedWriter out =new BufferedWriter(fw);
+		
+		while(!line.equals("END"))
+		{
+			System.out.println(line);
+			line=br.readLine();
+			String[] lp=new String[3];
+			lp=line.split("\t",3);
+			
+			if(islabel(line))	//if label exist
+			{
+				sym s=null;int flag=0;
+				for(int i=0;i<symtab.size();i++)
+				{
+					s=symtab.get(i);
+					if(s.getname()==lp[0])
+					{
+						flag=1;break;
+					}
+					if(flag==1)
+					{
+						s.add=loc_cntr;
+					}
+					else
+					{
+						s=new sym();
+						s.name=lp[0];
+						s.add=loc_cntr;
+					}
+				}
+			}
+			if(lp[1]=="LTORG")
+			{
+				for(int j=pooltab[ptptr];j<litptr;j++)
+				{
+					lit l=littab.get(j);
+					l.add=loc_cntr;
+					loc_cntr++;
+				}
+				ptptr++;
+				pooltab[ptptr]=litptr;
+			}
+			
+			if(lp[1].equals("START"))
+			{
+				loc_cntr=Integer.parseInt(lp[2]);
+			}
+			if(lp[1].equals("ORIGIN"))
+			{
+				if(lp[2].length()==1)
+				{
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s=symtab.get(i);
+						if(s.name==lp[2])
+						{
+							loc_cntr=s.add;
+						}
+					}
+				}
+				else if(lp[2].length()==3)
+				{
+					String[] exp=new String[2];
+					exp=lp[2].split("+");
+					int offset=Integer.parseInt(exp[1]);
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s=symtab.get(i);
+						if(s.name==lp[2])
+						{
+							loc_cntr=s.add+offset;
+						}
+					}
+				}
+			}
+			if(lp[1].equals("EQU"))
+			{
+				sym s=null;
+				for(int i=0;i<symtab.size();i++)
+				{
+					s=symtab.get(i);
+					if(s.name==lp[0])
+					{
+						break;
+					}
+				}
+				if(lp[2].length()==1)
+				{
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s1=symtab.get(i);
+						if(s1.name==lp[2])
+						{
+							s.add=s1.add;
+						}
+					}
+				}
+				else if(lp[2].length()==3)
+				{
+					String[] exp=new String[2];
+					exp=lp[2].split("+");
+					int offset=Integer.parseInt(exp[1]);
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s1=symtab.get(i);
+						if(s1.name==lp[2])
+						{
+							s.add=s1.add+offset;
+						}
+					}
+				}
+			}
+			
+			if(lp[1].equals("DS"))
+			{
+				String write="";
+				write=write+"(DL,02)";
+				int size=Integer.parseInt(lp[2]);
+				sym s=null;
+				for(int i=0;i<symtab.size();i++)
+				{
+					s=symtab.get(i);
+					if(s.getname()==lp[0])
+					{
+						s.add=loc_cntr;
+						loc_cntr=+size;
+						write=write+"\t(C,"+i+")\n";
+						break;
+					}
+					
+				}
+				out.append(write);
+						
+			}
+			if(lp[1].equals("DC"))
+			{
+				String write="";
+				write=write+"(DL,01)";
+				sym s=null;
+				for(int i=0;i<symtab.size();i++)
+				{
+					s=symtab.get(i);
+					if(s.getname()==lp[0])
+					{
+						s.add=loc_cntr;
+						loc_cntr=+1;
+						write=write+"\t(C,"+i+")\n";
+						break;
+					}
+					
+				}
+				out.append(write);
+			}
+			if(is.containsKey(lp[1]))
+			{
+				if(lp[1].equals("MOVER")||lp[1].equals("MOVEM")||lp[1].equals("ADD")||lp[1].equals("SUB")||lp[1].equals("MULT")||lp[1].equals("DIV"))
+				{
+					String write="(IS,"+is.get(lp[1])+")\t";
+					String[] exp=new String[2];
+					exp=lp[2].split(",");
+					
+					if(exp[1]=="AREG")
+					{
+						write=write+"(1)\t";
+					}
+					if(exp[1]=="BREG")
+					{
+						write=write+"(2)\t";
+					}
+					if(exp[1]=="CREG")
+					{
+						write=write+"(3)\t";
+					}
+					if(exp[1]=="DREG")
+					{
+						write=write+"(4)\t";
+					}
+					int flag=0;
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s=symtab.get(i);
+						if(s.getname()==exp[2])
+						{
+							write=write+"(S,"+i+")/n";
+							flag=1;
+							break;
+						}
+					}
+					if(flag!=0)
+					{
+						
+					}
+				}
+			}
+			
+		}
+		
+		br.close();
+		out.close();
+	}
+	
+	
+}
