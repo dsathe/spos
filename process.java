@@ -120,73 +120,78 @@ class pass1 {
 			if(islabel(line))	//if label exist
 			{
 				sym s=null;int flag=0;
-				for(int i=0;i<symtab.size();i++)
-				{
-					s=symtab.get(i);
-					if(s.getname()==lp[0])
-					{
-						flag=1;break;
-					}
-					if(flag==1)
-					{
-						s.add=loc_cntr;
-					}
-					else
-					{
-						s=new sym();
-						s.name=lp[0];
-						s.add=loc_cntr;
-						symtab.add(s);
-					}
-				}
 				if(symtab.size()==0)
 				{
 					s=new sym();
 					s.name=lp[0];
 					s.add=loc_cntr;
 					symtab.add(s);
+					//System.out.print("HI give add"+loc_cntr);
+				}
+				else
+				{	
+					for(int i=0;i<symtab.size();i++)
+					{
+						s=symtab.get(i);
+						if(s.getname().equals(lp[0]))
+						{
+							flag=1;break;
+						}	
+					}
+					if(flag!=1)
+					{
+						s=new sym();
+						s.name=lp[0];
+						s.add=loc_cntr;
+						//System.out.print("HI give add"+loc_cntr+"GOT"+s.name);
+						symtab.add(s);
+					}
 				}
 			}
-			/*
-			if(lp[1]=="LTORG")
+			
+			if(lp[1].equals("LTORG"))
 			{
 				for(int j=pooltab[ptptr];j<litptr;j++)
 				{
 					lit l=littab.get(j);
-					l.add=loc_cntr;
-					loc_cntr++;
+					if (l.add==0)
+					{	
+						l.add=loc_cntr;
+						loc_cntr++;
+					}
 				}
 				ptptr++;
 				pooltab[ptptr]=litptr;
 			}
-			*/
+			
 			if(lp[1].equals("START"))
 			{
 				loc_cntr=Integer.parseInt(lp[2]);
 			}
-			/*
+			
 			if(lp[1].equals("ORIGIN"))
 			{
-				if(lp[2].length()==1)
+				if(!lp[2].contains("+"))
 				{
 					for(int i=0;i<symtab.size();i++)
 					{
 						sym s=symtab.get(i);
-						if(s.name==lp[2])
+						if(s.name.equals(lp[2]))
 						{
 							loc_cntr=s.add;
 						}
 					}
 				}
-				else if(lp[2].length()==3)
+				else
 				{
 					String[] exp=new String[2];
-					exp=lp[2].split("+");
+					//System.out.print(lp[2]);
+					exp=lp[2].split("\\+");
 					int offset=Integer.parseInt(exp[1]);
 					for(int i=0;i<symtab.size();i++)
 					{
 						sym s=symtab.get(i);
-						if(s.name==lp[2])
+						if(s.name.equals(exp[0]))
 						{
 							loc_cntr=s.add+offset;
 						}
@@ -199,26 +204,28 @@ class pass1 {
 				for(int i=0;i<symtab.size();i++)
 				{
 					s=symtab.get(i);
-					if(s.name==lp[0])
+					if(s.name.equals(lp[0]))
 					{
 						break;
 					}
 				}
-				if(lp[2].length()==1)
+				if(!lp[2].contains("+"))
 				{
+					//System.out.println(s.name);
 					for(int i=0;i<symtab.size();i++)
 					{
 						sym s1=symtab.get(i);
-						if(s1.name==lp[2])
+						if(s1.name.equals(lp[2]))
 						{
-							s.add=s1.add;
+							System.out.println(s1.name);
+							s1.add=s.add;
 						}
 					}
 				}
-				else if(lp[2].length()==3)
+				else 
 				{
 					String[] exp=new String[2];
-					exp=lp[2].split("+");
+					exp=lp[2].split("\\+",2);
 					int offset=Integer.parseInt(exp[1]);
 					for(int i=0;i<symtab.size();i++)
 					{
@@ -226,11 +233,12 @@ class pass1 {
 						if(s1.name==lp[2])
 						{
 							s.add=s1.add+offset;
+							System.out.println("Settting the address of"+s.name+"to"+s.add);
 						}
 					}
 				}
 			}
-			*/
+			
 			if(lp[1].equals("DS"))
 			{
 				String write="";
@@ -241,11 +249,11 @@ class pass1 {
 				for(int i=0;i<symtab.size();i++)
 				{
 					s=symtab.get(i);
-					if(s.getname()==lp[0])
+					if(s.getname().equals(lp[0]))
 					{
 						s.add=loc_cntr;
 						loc_cntr+=size;
-						write=write+"\t(C,"+i+")\n";
+						write=write+"\t(S,"+i+")\n";
 						System.out.println(write);
 						break;
 					}
@@ -262,11 +270,11 @@ class pass1 {
 				for(int i=0;i<symtab.size();i++)
 				{
 					s=symtab.get(i);
-					if(s.getname()==lp[0])
+					if(s.name.equals(lp[0]))
 					{
 						s.add=loc_cntr;
 						loc_cntr=loc_cntr+1;
-						write=write+"\t(C,"+i+")\n";
+						write=write+"\t(S,"+i+")\n";
 						System.out.println(write);
 						break;
 					}
@@ -301,7 +309,7 @@ class pass1 {
 					//System.out.println(exp[1]);
 					if(isliteral(exp[1]))
 					{	
-						String literals=exp[1].substring(2,exp[1].length()-2);
+						String literals=exp[1].substring(2,exp[1].length()-1);
 						int flag1=0;
 						for(int j=pooltab[ptptr];j<litptr;j++)
 						{
@@ -310,20 +318,20 @@ class pass1 {
 							{
 								write=write+"(L"+j+")\n";
 								System.out.println(write);
-								loc_cntr++;
 								flag1=1;
 								break;
 							}
 						}
-						if(flag1!=0)
+						if(flag1==0)
 						{
 							lit l=new lit();
 							l.name=literals;
-							l.add=loc_cntr;
+							l.add=0;
 							littab.add(l);
-							loc_cntr++;
 							litptr++;
+							write=write+"(L,"+litptr+")\n";
 						}
+						loc_cntr++;
 					}
 					else
 					{
@@ -331,25 +339,28 @@ class pass1 {
 						for(int i=0;i<symtab.size();i++)
 						{
 							sym s=symtab.get(i);
-							if(s.getname()==exp[1])
+						
+							if(s.name==exp[1])
 							{
+								System.out.print("hiohfr");
 								write=write+"(S,"+i+")/n";
 								System.out.println(write);
-								loc_cntr++;
 								flag=1;
 								break;
 							}
 						}
-						if(flag==1)
+						if(flag==0)
 						{
 							sym s=new sym();
 							s.name=exp[1];
 							s.add=loc_cntr;
 							symtab.add(s);
-							loc_cntr++;
+							write=write+"(S,"+symptr+")\n";
 							symptr++;
 						}
+						loc_cntr++;
 					}
+					System.out.println(write);
 					out.append(write);
 				}
 				
