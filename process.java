@@ -282,6 +282,25 @@ class pass1 {
 				}
 				out.append(write);
 			}
+			if(lp[1].equals("BC"))
+			{
+				String write=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
+				String[] exp=new String[2];
+				exp=lp[2].split(",",2);
+				write+="("+cc.get(exp[0])+")\t";
+				if(!exp[1].contains("\\+"))
+				{
+					for(int i=0;i<symtab.size();i++)
+					{
+						sym s1=symtab.get(i);
+						if(s1.name.equals(exp[1]))
+						{
+							write+=s1.add+"\n";
+						}
+					}
+				}
+				System.out.println(write);
+			}
 			if(is.containsKey(lp[1]))
 			{
 				if(lp[1].equals("MOVER")||lp[1].equals("MOVEM")||lp[1].equals("ADD")||lp[1].equals("SUB")||lp[1].equals("MULT")||lp[1].equals("DIV"))
@@ -289,20 +308,19 @@ class pass1 {
 					String write=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
 					String[] exp=new String[2];
 					exp=lp[2].split(",");
-					
-					if(exp[0]=="AREG")
+					if(exp[0].equals("AREG"))
 					{
 						write=write+"(1)\t";
 					}
-					if(exp[0]=="BREG")
+					if(exp[0].equals("BREG"))
 					{
 						write=write+"(2)\t";
 					}
-					if(exp[0]=="CREG")
+					if(exp[0].equals("CREG"))
 					{
 						write=write+"(3)\t";
 					}
-					if(exp[0]=="DREG")
+					if(exp[0].equals("DREG"))
 					{
 						write=write+"(4)\t";
 					}
