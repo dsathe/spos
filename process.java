@@ -108,11 +108,11 @@ class pass1 {
 	{
 		BufferedReader br=new BufferedReader(new FileReader ("/home/TE/3167/spos/workspace/demo.asm"));
 		String line="";
-		FileWriter fw=new FileWriter("intermediate.asm",true);
-		
+		FileWriter fw=new FileWriter(new File("/home/TE/3167/spos/workspace/Assembler/intermediate.asm"));
+		BufferedWriter out =new BufferedWriter(fw);
 		while(true)
 		{
-			BufferedWriter out =new BufferedWriter(fw);
+			
 			line=br.readLine();
 			System.out.println(line);
 			String[] lp=new String[3];
@@ -241,8 +241,8 @@ class pass1 {
 			
 			if(lp[1].equals("DS"))
 			{
-				String write="";
-				write=write+loc_cntr+")\t"+"(DL,02)";
+				String write1="";
+				write1=write1+loc_cntr+")\t"+"(DL,02)";
 				int size=Integer.parseInt(lp[2]);
 				sym s=null;
 				int flag=0;
@@ -253,19 +253,20 @@ class pass1 {
 					{
 						s.add=loc_cntr;
 						loc_cntr+=size;
-						write=write+"\t(S,"+i+")\n";
-						System.out.println(write);
+						write1=write1+"\t(S,"+i+")\n";
+						System.out.println(write1);
 						break;
 					}
 					
 				}
-				out.append(write);
+				out.write(write1);
+				out.flush();
 						
 			}
 			if(lp[1].equals("DC"))
 			{
-				String write="";
-				write=write+loc_cntr+")\t"+"(DL,01)";
+				String write1="";
+				write1=write1+loc_cntr+")\t"+"(DL,01)";
 				sym s=null;
 				for(int i=0;i<symtab.size();i++)
 				{
@@ -274,20 +275,21 @@ class pass1 {
 					{
 						s.add=loc_cntr;
 						loc_cntr=loc_cntr+1;
-						write=write+"\t(S,"+i+")\n";
-						System.out.println(write);
+						write1=write1+"\t(S,"+i+")\n";
+						System.out.println(write1);
 						break;
 					}
 					
 				}
-				out.append(write);
+				out.write(write1);
+				out.flush();
 			}
 			if(lp[1].equals("BC"))
 			{
-				String write=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
+				String write1=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
 				String[] exp=new String[2];
 				exp=lp[2].split(",",2);
-				write+="("+cc.get(exp[0])+")\t";
+				write1+="("+cc.get(exp[0])+")\t";
 				if(!exp[1].contains("\\+"))
 				{
 					for(int i=0;i<symtab.size();i++)
@@ -295,34 +297,34 @@ class pass1 {
 						sym s1=symtab.get(i);
 						if(s1.name.equals(exp[1]))
 						{
-							write+=s1.add+"\n";
+							write1+=s1.add+"\n";
 						}
 					}
 				}
-				System.out.println(write);
+				System.out.println(write1);
 			}
 			if(is.containsKey(lp[1]))
 			{
 				if(lp[1].equals("MOVER")||lp[1].equals("MOVEM")||lp[1].equals("ADD")||lp[1].equals("SUB")||lp[1].equals("MULT")||lp[1].equals("DIV"))
 				{
-					String write=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
+					String write1=loc_cntr+")\t"+"(IS,"+is.get(lp[1])+")\t";
 					String[] exp=new String[2];
 					exp=lp[2].split(",");
 					if(exp[0].equals("AREG"))
 					{
-						write=write+"(1)\t";
+						write1=write1+"(1)\t";
 					}
 					if(exp[0].equals("BREG"))
 					{
-						write=write+"(2)\t";
+						write1=write1+"(2)\t";
 					}
 					if(exp[0].equals("CREG"))
 					{
-						write=write+"(3)\t";
+						write1=write1+"(3)\t";
 					}
 					if(exp[0].equals("DREG"))
 					{
-						write=write+"(4)\t";
+						write1=write1+"(4)\t";
 					}
 					//System.out.println(exp[1]);
 					if(isliteral(exp[1]))
@@ -334,8 +336,8 @@ class pass1 {
 							lit l=littab.get(j);
 							if(literals==l.getname())
 							{
-								write=write+"(L"+j+")\n";
-								System.out.println(write);
+								write1=write1+"(L"+j+")\n";
+								System.out.println(write1);
 								flag1=1;
 								break;
 							}
@@ -347,7 +349,7 @@ class pass1 {
 							l.add=0;
 							littab.add(l);
 							litptr++;
-							write=write+"(L,"+litptr+")\n";
+							write1=write1+"(L,"+litptr+")\n";
 						}
 						loc_cntr++;
 					}
@@ -361,8 +363,8 @@ class pass1 {
 							if(s.name==exp[1])
 							{
 								System.out.print("hiohfr");
-								write=write+"(S,"+i+")/n";
-								System.out.println(write);
+								write1=write1+"(S,"+i+")/n";
+								System.out.println(write1);
 								flag=1;
 								break;
 							}
@@ -373,25 +375,78 @@ class pass1 {
 							s.name=exp[1];
 							s.add=loc_cntr;
 							symtab.add(s);
-							write=write+"(S,"+symptr+")\n";
+							write1=write1+"(S,"+symptr+")\n";
 							symptr++;
 						}
 						loc_cntr++;
 					}
-					System.out.println(write);
-					out.append(write);
+					System.out.println(write1);
+					out.write(write1);
+					out.flush();
 				}
 				
 			}
 			if(line.contains("END"))
 			{
-				String write=loc_cntr+")\t"+"(AD,02)"+"\n";
-				System.out.println(write);
-				out.append(write);
+				String write1=loc_cntr+")\t"+"(AD,02)"+"\n";
+				System.out.println(write1);
+				out.write(write1);
+				out.flush();
 				break;
 			}
 		}
-		
+		out.close();
+		br.close();
+	}
+	
+	void genout() throws IOException
+	{
+		BufferedReader br=new BufferedReader(new FileReader ("/home/TE/3167/spos/workspace/Assembler/intermediate.asm"));
+		String line="";
+		FileWriter fw=new FileWriter(new File("/home/TE/3167/spos/workspace/Assembler/Output.asm"));
+		BufferedWriter out =new BufferedWriter(fw);
+		while(true)
+		{
+			line=br.readLine();
+			System.out.println(line);
+			String[] lp=new String[4];
+			lp=line.split("\t");
+			String write1="";
+			
+			if(line.contains("(AD,02)"))
+			{
+				break;
+			}
+			
+			if(lp[1].contains("IS"))
+			{
+				String opcode=lp[1].substring(4,lp[1].length()-2);
+				write1=opcode+"\t";
+				String reg=lp[2].substring(1,3);
+				write1=write1+reg+"\t";
+			}
+			
+			if(lp[1].contains("DL"))
+			{
+				write1="00\t0\t";
+				String number=lp[2].substring(3,lp[2].length()-2);
+				if(number.length()==1)
+				{	
+					write1+="00"+number;
+				}
+				else if(number.length()==2)
+				{
+					write1+="0"+number;
+				}
+				else
+				{
+					write1+=number;
+				}
+				write1=write1+"\n";
+				System.out.println(write1);
+			}
+		}
+		out.close();
 		br.close();
 	}
 	
