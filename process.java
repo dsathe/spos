@@ -420,27 +420,46 @@ class pass1 {
 			
 			if(lp[1].contains("IS"))
 			{
-				String opcode=lp[1].substring(4,lp[1].length()-2);
+				String opcode=lp[1].substring(4,lp[1].length()-1);
+				//System.out.println(opcode);
 				write1=opcode+"\t";
-				String reg=lp[2].substring(1,3);
+				String reg=lp[2].substring(1,2);
+				//System.out.println(reg);
 				write1=write1+reg+"\t";
+				if(lp[3].contains("S"))
+				{
+					sym s=null;
+					String offset=lp[3].substring(3,lp[3].length()-1);
+					int off=Integer.parseInt(offset);
+					s=symtab.get(off);
+					write1=write1+s.add+"\n";
+				}
+				else if(lp[3].contains("L"))
+				{
+					lit l=null;
+					String offset=lp[3].substring(3,lp[3].length()-1);
+					int off=Integer.parseInt(offset);
+					l=littab.get(off-1);
+					write1=write1+"00"+l.add+"\n";
+				}
+				System.out.println(write1);
 			}
 			
 			if(lp[1].contains("DL"))
 			{
 				write1="00\t0\t";
-				String number=lp[2].substring(3,lp[2].length()-2);
+				String number=lp[2].substring(3,lp[2].length()-1);
 				if(number.length()==1)
 				{	
-					write1+="00"+number;
+					write1=write1+"00"+number;
 				}
 				else if(number.length()==2)
 				{
-					write1+="0"+number;
+					write1=write1+"0"+number;
 				}
 				else
 				{
-					write1+=number;
+					write1=write1+number;
 				}
 				write1=write1+"\n";
 				System.out.println(write1);
