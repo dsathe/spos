@@ -137,6 +137,7 @@ public class macro {
 			String lp[]=new String[4];
 			lp=line.split("\t");
 			int flag=0;
+			//System.out.println(line);
 			if(line.contains("\tEND"))
 			{
 				out.write(line);
@@ -149,16 +150,42 @@ public class macro {
 				{
 					arg=lp[2].split(",");
 					flag=1;
-					int ptr=n.getstartid();
+					int ptr=0;
+					//System.out.println(ptr);
 					while(true)
 					{
 						
+						String getmac1=mdt.get(n.getstartid()+ptr);
+						System.out.println(getmac1);
+						if(getmac1.equals("\tMEND"))
+						{
+							break;
+						}
+						
+						int flag1=0;
+						if(getmac1.contains("#"))
+						{
+							
+							int hashpos=getmac1.indexOf('#');
+							String pospara=getmac1.substring(hashpos, hashpos+2);
+							int paranum=Character.getNumericValue(getmac1.charAt(hashpos+1));
+							//System.out.println(" "+paranum);
+							String replace=getmac1.replace(pospara, arg[paranum-1]);
+							out.write(replace+"\n");
+							flag1=1;
+						}
+						if(flag1==0)
+						{	
+							out.write(getmac1+"\n");
+						}
+						ptr++;
 					}
+					continue;
 				}
 			}
-			if(flag==1)
+			if(flag!=1)
 			{
-				out.write(line);
+				out.write(line+"\n");
 			}
 		}
 		br.close();
@@ -169,5 +196,6 @@ public class macro {
 	{
 		macro m=new macro();
 		m.pass1();
+		m.pass2();
 	}
 }
